@@ -45,5 +45,5 @@ FRED_SERIES: dict[str, str] = {
     "US 2Y Yield": "DGS2",
     "US 10Y Real Yield": "DFII10",
     "US Money Supply M2": "M2SL",
+    "VIX": "VIXCLS",
 }
-

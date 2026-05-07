@@ -76,7 +76,8 @@ def download_fred_series(
 def monthly_prices(prices: pd.DataFrame) -> pd.DataFrame:
     """Convert daily prices to month-end prices."""
 
-    return prices.resample("ME").last()
+    monthly = prices.resample("ME").last()
+    return monthly.loc[monthly.index <= pd.Timestamp.today().normalize()]
 
 
 def align_to_monthly(market_data: pd.DataFrame, macro_data: pd.DataFrame) -> pd.DataFrame:

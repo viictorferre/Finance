@@ -9,19 +9,28 @@ La idea central es construir, paso a paso, una herramienta que permita responder
 - Que ocurre con distintos activos cuando cambian los tipos, la inflacion o el ciclo economico?
 - Que cartera simple se comporta mejor frente a un benchmark?
 
-## Fase actual
+## Fase Actual
 
-Estamos en la Fase 1: analisis exploratorio.
+La Fase 1 ya esta funcional: analisis exploratorio de activos.
 
-Primer entregable:
+Incluye:
 
 1. Descargar precios de activos financieros.
-2. Calcular retornos diarios.
+2. Calcular retornos diarios y mensuales.
 3. Medir rentabilidad anualizada, volatilidad, Sharpe y drawdown maximo.
 4. Visualizar rentabilidad acumulada, drawdowns y correlaciones.
-5. Dejar el codigo preparado para convertirlo despues en dashboard.
+5. Dejar el codigo preparado para dashboard.
 
-## Activos iniciales
+Estamos entrando en la Fase 2: analisis macro y regimenes economicos.
+
+Incluye:
+
+1. Descargar variables macroeconomicas desde FRED.
+2. Transformar datos macro en indicadores interpretables.
+3. Clasificar meses en regimenes simples de inflacion, tipos, crecimiento y curva.
+4. Estudiar que activos se comportan mejor en cada regimen.
+
+## Activos Iniciales
 
 El proyecto empieza con activos liquidos y faciles de consultar desde Yahoo Finance:
 
@@ -40,30 +49,47 @@ El proyecto empieza con activos liquidos y faciles de consultar desde Yahoo Fina
 | Santander | SAN.MC | Banco europeo |
 | Inditex | ITX.MC | Consumo europeo |
 
+## Variables Macro Iniciales
+
+| Variable | Fuente FRED | Uso |
+| --- | --- | --- |
+| CPI | CPIAUCSL | Inflacion interanual |
+| Fed Funds Rate | FEDFUNDS | Tipos de interes oficiales |
+| Desempleo | UNRATE | Mercado laboral |
+| PIB real | GDPC1 | Crecimiento economico |
+| Treasury 10Y | DGS10 | Tipo largo |
+| Treasury 2Y | DGS2 | Tipo corto |
+| Treasury 10Y real | DFII10 | Tipo real |
+| M2 | M2SL | Masa monetaria |
+| VIX | VIXCLS | Volatilidad esperada del S&P 500 |
+
 ## Estructura
 
 ```text
 macroquant-lab/
-├── app/
-│   └── streamlit_app.py
-├── data/
-│   ├── raw/
-│   └── processed/
-├── notebooks/
-│   └── 01_asset_exploration.ipynb
-├── reports/
-├── scripts/
-│   └── run_asset_snapshot.py
-├── src/
-│   └── macroquant_lab/
-│       ├── config.py
-│       ├── data_loader.py
-│       ├── metrics.py
-│       └── visualization.py
-├── tests/
-├── README.md
-├── pyproject.toml
-└── requirements.txt
+|-- app/
+|   `-- streamlit_app.py
+|-- data/
+|   |-- raw/
+|   `-- processed/
+|-- notebooks/
+|   |-- 01_asset_exploration.ipynb
+|   `-- 02_macro_regimes.ipynb
+|-- reports/
+|-- scripts/
+|   |-- run_asset_snapshot.py
+|   `-- run_macro_snapshot.py
+|-- src/
+|   `-- macroquant_lab/
+|       |-- config.py
+|       |-- data_loader.py
+|       |-- macro.py
+|       |-- metrics.py
+|       `-- visualization.py
+|-- tests/
+|-- README.md
+|-- pyproject.toml
+`-- requirements.txt
 ```
 
 ## Instalacion
@@ -78,21 +104,28 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Primer analisis
+## Analisis
 
-Ejecuta el snapshot inicial:
+Ejecuta el snapshot de activos:
 
 ```powershell
 python scripts/run_asset_snapshot.py
 ```
 
-Abre el notebook:
+Ejecuta el snapshot macro:
+
+```powershell
+python scripts/run_macro_snapshot.py
+```
+
+Abre los notebooks:
 
 ```text
 notebooks/01_asset_exploration.ipynb
+notebooks/02_macro_regimes.ipynb
 ```
 
-El notebook esta pensado para estudiar estas ideas:
+El primer notebook estudia:
 
 - `price`: precio ajustado del activo.
 - `return`: variacion porcentual entre dos fechas.
@@ -101,15 +134,33 @@ El notebook esta pensado para estudiar estas ideas:
 - `drawdown`: caida desde un maximo previo.
 - `correlation`: relacion lineal entre activos.
 
+El segundo notebook estudia:
+
+- inflacion interanual.
+- tipos oficiales.
+- curva 10Y-2Y.
+- crecimiento del PIB.
+- rentabilidad de activos por regimen macro.
+
 ## Dashboard
 
-Cuando quieras probar la primera app:
+Cuando quieras probar la app:
 
 ```powershell
 streamlit run app/streamlit_app.py
 ```
 
-## Ruta de aprendizaje
+El dashboard incluye:
+
+- precios.
+- rentabilidad acumulada.
+- drawdowns.
+- correlaciones.
+- indicadores macro.
+- retornos por regimen macro.
+- tabla de metricas.
+
+## Ruta De Aprendizaje
 
 1. Medir activos: retornos, volatilidad, Sharpe, drawdown y correlaciones.
 2. Introducir macro: inflacion, tipos, desempleo, PIB, VIX y curva 10Y-2Y.
@@ -121,4 +172,3 @@ streamlit run app/streamlit_app.py
 ## Nota
 
 Este repositorio es educativo. No contiene recomendaciones de inversion ni pretende predecir precios.
-

@@ -42,3 +42,29 @@ def plot_correlation_heatmap(returns: pd.DataFrame) -> go.Figure:
     fig.update_layout(xaxis_title=None, yaxis_title=None)
     return fig
 
+
+def plot_macro_series(macro_features: pd.DataFrame, columns: list[str] | None = None) -> go.Figure:
+    """Plot selected macro indicators through time."""
+
+    selected = macro_features[columns] if columns else macro_features
+    fig = px.line(selected, title="Macro indicators")
+    fig.update_layout(yaxis_title="Value", xaxis_title=None, legend_title_text=None)
+    return fig
+
+
+def plot_regime_asset_returns(regime_summary: pd.DataFrame) -> go.Figure:
+    """Plot asset annualized returns grouped by macro regime."""
+
+    heatmap_data = regime_summary.pivot(
+        index="macro_regime",
+        columns="asset",
+        values="annualized_return",
+    )
+    fig = px.imshow(
+        heatmap_data,
+        text_auto=".1%",
+        color_continuous_scale="RdYlGn",
+        title="Annualized return by macro regime",
+    )
+    fig.update_layout(xaxis_title=None, yaxis_title=None)
+    return fig
